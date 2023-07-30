@@ -13,10 +13,10 @@ export function validateParams<T>(schema: ObjectSchema<T>): ValidationMiddleware
 
 function validate(schema: ObjectSchema, type: 'body' | 'params') {
   return (req: Request, res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req[type], {
+    const { error, value } = schema.validate(req[type], {
       abortEarly: false,
     });
-    res.locals[type] = req[type]
+    res.locals[type] = value
     if (!error) {
       next();
     } else {

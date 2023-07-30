@@ -1,15 +1,16 @@
 import { Request, Response, Router } from 'express';
 import { credentialSchema } from '@/schema';
-import { authenticateToken, validateBody, validateParams } from '@/middleware';
 import { idParamSchema } from '@/schema/param-schema';
+import { authenticateToken, validateBody, validateParams } from '@/middleware';
+import { credentialGet, credentialPost } from '@/controller/credentials-controller';
 
 
 const credentialRouter = Router();
 
 credentialRouter
     .all('/*', authenticateToken)
-    .get('/:id?', validateParams(idParamSchema), returnLocals)
-    .post('/', validateBody(credentialSchema),)
+    .get('/:id?', validateParams(idParamSchema), credentialGet)
+    .post('/', validateBody(credentialSchema), credentialPost)
     .delete('/:id', validateBody)
 
 export { credentialRouter };
