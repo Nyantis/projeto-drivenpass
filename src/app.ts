@@ -7,10 +7,10 @@ import { loadEnv, connectDb, disconnectDB } from '@/config';
 
 loadEnv();
 
-import { handleApplicationErrors } from '@/middlewares';
+import { handleApplicationErrors } from '@/middleware';
 import {
   authenticationRouter,
-} from '@/routers';
+} from '@/router';
 
 const app = express();
 app

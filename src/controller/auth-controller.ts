@@ -1,9 +1,9 @@
-import { SignInParams } from '@/services';
-import authenticationService from '@/services/auth-service';
+import { SignInParams } from '@/service';
+import authenticationService from '@/service/auth-service';
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 
-export async function singInPost(req: Request, res: Response) {
+export async function loginPost(req: Request, res: Response) {
   const { email, password } = req.body as SignInParams;
 
   try {
@@ -15,7 +15,7 @@ export async function singInPost(req: Request, res: Response) {
   }
 }
 
-export async function usersPost(req: Request, res: Response) {
+export async function registerPost(req: Request, res: Response) {
   const { email, password } = req.body;
 
   try {

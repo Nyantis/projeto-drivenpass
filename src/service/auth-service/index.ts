@@ -2,8 +2,8 @@ import { User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { duplicatedEmailError, invalidCredentialsError } from './errors';
-import { exclude } from '@/utils/prisma-utils';
-import authRepository from '@/repositories/auth-repository';
+import { exclude } from '@/util/prisma-utils';
+import authRepository from '@/repository/auth-repository';
 
 async function signIn(params: SignInParams): Promise<SignInResult> {
   const { email, password } = params;

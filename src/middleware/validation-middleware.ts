@@ -1,4 +1,4 @@
-import { invalidDataError } from '@/errors';
+import { invalidDataError } from '@/error';
 import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { ObjectSchema } from 'joi';
