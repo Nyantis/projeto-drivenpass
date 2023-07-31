@@ -13,7 +13,7 @@ export async function networkPost(req: Request, res: Response) {
     return res.status(httpStatus.OK).send(result);
 
   } catch (error) {
-    return res.sendStatus(httpStatus.UNAUTHORIZED);
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -25,7 +25,10 @@ export async function networkGet(req: Request, res: Response) {
   
       return res.status(httpStatus.OK).send(result);
     } catch (error) {
-      return res.sendStatus(httpStatus.UNAUTHORIZED);
+      if(error.code){
+        return res.status(error.code).send(error.content);
+      }
+      return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -37,6 +40,9 @@ export async function networkDelete(req: Request, res: Response) {
   
       return res.status(httpStatus.OK).send(result);
     } catch (error) {
-      return res.sendStatus(httpStatus.UNAUTHORIZED);
+      if(error.code){
+        return res.status(error.code).send(error.content);
+      }
+      return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }

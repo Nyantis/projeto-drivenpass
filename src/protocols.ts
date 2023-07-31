@@ -10,3 +10,8 @@ export type RequestError = {
   name: string;
   message: string;
 };
+
+export type MyError = {
+  code?: number,
+  content: ApplicationError
+}
