@@ -76,7 +76,6 @@ describe('GET /credential/id', () => {
     it('should respond with status 200 and credential data for given credential Id', async () => {
       const user = await createUser();
       const credential = await createCredentialFactory(user, "password");
-      console.log(credential)
       const token = await generateValidToken(user);
 
       const response = await server.get(`/credential/${credential.id}`).set('Authorization', `Bearer ${token}`);

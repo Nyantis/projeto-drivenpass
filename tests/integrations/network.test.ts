@@ -76,7 +76,6 @@ describe('GET /network/id', () => {
     it('should respond with status 200 and network data for given network Id', async () => {
       const user = await createUser();
       const network = await createNetworkFactory(user, "password");
-      console.log(network)
       const token = await generateValidToken(user);
 
       const response = await server.get(`/network/${network.id}`).set('Authorization', `Bearer ${token}`);
