@@ -10,11 +10,10 @@ async function create(data: Prisma.NetworkUncheckedCreateInput) {
 
 //-----------------------------------------------------------------
 
-async function findById(id: number, userId:number) {
+async function findById(id: number) {
   const params: Prisma.NetworkFindUniqueArgs = {
     where: {
-      id,
-      userId
+      id
     },
   };
 

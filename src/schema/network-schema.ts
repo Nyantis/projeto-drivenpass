@@ -8,7 +8,7 @@ export const networkSchema = Joi.object<NetworkSchema>({
     password: Joi.string().required(),
 });
 
-type NetworkSchema = Pick<Network, 'title' | 'network' | 'password' >;
+export type NetworkSchema = Pick<Network, 'title' | 'network' | 'password' >;
 export type CreateNetwork = NetworkSchema & {
     userId: number
 };

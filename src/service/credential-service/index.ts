@@ -2,7 +2,7 @@ import { Credential} from '@prisma/client';
 import { CreateCredential } from '@/schema';
 import credentialRepository from '@/repository/credential-repository';
 import { cryptrThis, decryptrThis } from '@/util/cryptr';
-import { cantAccessThis, couldntFindAny } from '@/error';
+import { cantAccessThis, couldntFindAny, notFoundError } from '@/error';
 
 export async function create(body: CreateCredential): Promise<Credential> {
     const hashPass = cryptrThis(body.password)
@@ -34,10 +34,12 @@ async function gotcha(userId:number, id?:number): Promise<Credential[] | Credent
 }
 
 export async function deleteById(userId:number, id:number): Promise<Credential> {
-  const query = await credentialRepository.deleteById(userId, id)
-  if(!query)throw cantAccessThis("Credential")
+  const query = await credentialRepository.findById(id)
+  if(!query)throw notFoundError()
+  if(query.userId !== userId)throw cantAccessThis("Credential")
+  const resp = await credentialRepository.deleteById(userId, id)
  
-  return query
+  return resp
 }
 
 

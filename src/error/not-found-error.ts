@@ -1,8 +1,12 @@
-import { ApplicationError } from '@/protocols';
+import { MyError } from '@/protocols';
+import httpStatus from 'http-status';
 
-export function notFoundError(): ApplicationError {
+export function notFoundError(): MyError {
   return {
-    name: 'NotFoundError',
-    message: 'No result for this search!',
-  };
+    code: httpStatus.NOT_FOUND,
+    content: {
+      name: 'NotFoundError',
+      message: 'No result for this search!',
+    }
+  }
 }

@@ -3,12 +3,12 @@ import httpStatus from 'http-status';
 import * as jwt from 'jsonwebtoken';
 import supertest from 'supertest';
 
-import { createCredentialFactory, createUser } from '../factories';
+import { createNetworkFactory, createUser } from '../factories';
 import { cleanDb, generateValidToken } from '../helpers';
 import { prisma } from '@/config';
 import app, { init } from '@/app';
-import { Credential } from '@prisma/client';
-import { CredentialSchema } from '@/schema';
+import { Network } from '@prisma/client';
+import { NetworkSchema } from '@/schema';
 
 beforeAll(async () => {
   await init();
@@ -17,9 +17,9 @@ beforeAll(async () => {
 
 const server = supertest(app);
 
-describe('GET /credential', () => {
+describe('GET /network', () => {
   it('should respond with status 401 if no token is given', async () => {
-    const response = await server.get('/credential');
+    const response = await server.get('/network');
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -27,7 +27,7 @@ describe('GET /credential', () => {
   it('should respond with status 401 if given token is not valid', async () => {
     const token = faker.lorem.word();
 
-    const response = await server.get('/credential').set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/network').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -36,70 +36,69 @@ describe('GET /credential', () => {
     const userWithoutSession = await createUser();
     const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
 
-    const response = await server.get('/credential').set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/network').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 
   describe('when token is valid', () => {
 
-    it('should respond with status 204 when there is no credential created by the user', async () => {
+    it('should respond with status 204 when there is no network created by the user', async () => {
       const token = await generateValidToken();
 
-      const response = await server.get('/credential').set('Authorization', `Bearer ${token}`);
+      const response = await server.get('/network').set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(httpStatus.NO_CONTENT);
     });
 
-    it('should respond with status 200 and credential list when there are credentials created by the user', async () => {
+    it('should respond with status 200 and network list when there are networks created by the user', async () => {
       const user = await createUser();
-      const credential:Credential[] = [
-        await createCredentialFactory(user, "password"),
-        await createCredentialFactory(user, "password")]
+      const network:Network[] = [
+        await createNetworkFactory(user, "password"),
+        await createNetworkFactory(user, "password")]
       const token = await generateValidToken(user);
 
-      const response = await server.get('/credential').set('Authorization', `Bearer ${token}`);
+      const response = await server.get('/network').set('Authorization', `Bearer ${token}`);
       
-      credential[0].password = "password"
-      credential[1].password = "password"
+      network[0].password = "password"
+      network[1].password = "password"
 
       expect(response.status).toBe(httpStatus.OK);
       expect(response.body).toEqual(expect.arrayContaining([
-        ...credential
+        ...network
       ]));
     });
   });
 });
 
-describe('GET /credential/id', () => {
+describe('GET /network/id', () => {
   describe('when token is valid', () => {
-    it('should respond with status 200 and credential data for given credential Id', async () => {
+    it('should respond with status 200 and network data for given network Id', async () => {
       const user = await createUser();
-      const credential = await createCredentialFactory(user, "password");
-      console.log(credential)
+      const network = await createNetworkFactory(user, "password");
+      console.log(network)
       const token = await generateValidToken(user);
 
-      const response = await server.get(`/credential/${credential.id}`).set('Authorization', `Bearer ${token}`);
+      const response = await server.get(`/network/${network.id}`).set('Authorization', `Bearer ${token}`);
 
-      credential.password = "password"
+      network.password = "password"
 
 
       expect(response.status).toBe(httpStatus.OK);
       expect(response.body).toEqual({
-        id: credential.id,
-        password: credential.password,
-        title: credential.title,
-        url: credential.url,
-        userId: credential.userId,
-        username: credential.username,        
-      }as Credential);
+        id: network.id,
+        title: network.title,        
+        network: network.network,
+        password: network.password,
+        userId: network.userId,
+      }as Network);
     });
   });
 });
 
-describe('POST /credential', () => {
+describe('POST /network', () => {
   it('should respond with status 401 if no token is given', async () => {
-    const response = await server.post('/credential');
+    const response = await server.post('/network');
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -107,7 +106,7 @@ describe('POST /credential', () => {
   it('should respond with status 401 if given token is not valid', async () => {
     const token = faker.lorem.word();
 
-    const response = await server.post('/credential').set('Authorization', `Bearer ${token}`);
+    const response = await server.post('/network').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -116,7 +115,7 @@ describe('POST /credential', () => {
     const userWithoutSession = await createUser();
     const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
 
-    const response = await server.post('/credential').set('Authorization', `Bearer ${token}`);
+    const response = await server.post('/network').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -125,7 +124,7 @@ describe('POST /credential', () => {
     it('should respond with status 400 when body is not present', async () => {
       const token = await generateValidToken();
 
-      const response = await server.post('/credential').set('Authorization', `Bearer ${token}`);
+      const response = await server.post('/network').set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
@@ -134,7 +133,7 @@ describe('POST /credential', () => {
       const token = await generateValidToken();
       const body = { [faker.lorem.word()]: faker.lorem.word() };
 
-      const response = await server.post('/credential').set('Authorization', `Bearer ${token}`).send(body);
+      const response = await server.post('/network').set('Authorization', `Bearer ${token}`).send(body);
 
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
@@ -142,21 +141,20 @@ describe('POST /credential', () => {
     describe('when body is valid', () => {
       const generateValidBody = () => ({
         title: faker.company.name(),
-        url: faker.internet.url(),
+        network: faker.internet.url(),
         password: faker.internet.password(10),
-        username: faker.internet.userName(),
-      }as CredentialSchema);
+      }as NetworkSchema);
 
-      it('should respond with status 201 and create new credential if user doesnt already have one with same title', async () => {
+      it('should respond with status 201 and create new network if user doesnt already have one with same title', async () => {
         const body = generateValidBody();
         const user = await createUser()
         const token = await generateValidToken(user);
 
-        const response = await server.post('/credential').set('Authorization', `Bearer ${token}`).send(body);
+        const response = await server.post('/network').set('Authorization', `Bearer ${token}`).send(body);
 
         expect(response.status).toBe(httpStatus.OK);
-        const credential = await prisma.credential.findFirst({ where: { title: body.title, userId: user.id} });
-        expect(credential).toBeDefined();
+        const network = await prisma.network.findFirst({ where: { title: body.title, userId: user.id} });
+        expect(network).toBeDefined();
       });
       
     });
@@ -164,9 +162,9 @@ describe('POST /credential', () => {
 });
 
 
-describe('DELETE /credential/id', () => {
+describe('DELETE /network/id', () => {
   it('should respond with status 401 if no token is given', async () => {
-    const response = await server.delete('/credential/1');
+    const response = await server.delete('/network/1');
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -174,7 +172,7 @@ describe('DELETE /credential/id', () => {
   it('should respond with status 401 if given token is not valid', async () => {
     const token = faker.lorem.word();
 
-    const response = await server.delete('/credential/1').set('Authorization', `Bearer ${token}`);
+    const response = await server.delete('/network/1').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -183,7 +181,7 @@ describe('DELETE /credential/id', () => {
     const userWithoutSession = await createUser();
     const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
 
-    const response = await server.delete('/credential/1').set('Authorization', `Bearer ${token}`);
+    const response = await server.delete('/network/1').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -192,42 +190,42 @@ describe('DELETE /credential/id', () => {
     it('should respond with status 400 when param is not valid', async () => {
       const token = await generateValidToken();
 
-      const response = await server.delete('/credential/a').set('Authorization', `Bearer ${token}`);
+      const response = await server.delete('/network/a').set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
 
     describe('when param is valid', () => {
 
-      it('should respond with status 404 if the credential doesnt exists', async () => {
+      it('should respond with status 404 if the network doesnt exists', async () => {
         const tokenFromUser1 = await generateValidToken();
 
-        const response = await server.delete('/credential/'+5_000_000)
+        const response = await server.delete('/network/'+5_000_000)
         .set('Authorization', `Bearer ${tokenFromUser1}`);
 
         expect(response.status).toBe(httpStatus.NOT_FOUND);
       });
 
-      it('should respond with status 401 if the credential wasnt created by the user', async () => {
+      it('should respond with status 401 if the network wasnt created by the user', async () => {
         const tokenFromUser1 = await generateValidToken();
-        const credentialFromUser2 = await createCredentialFactory()
+        const networkFromUser2 = await createNetworkFactory()
 
-        const response = await server.delete('/credential/'+credentialFromUser2.id)
+        const response = await server.delete('/network/'+networkFromUser2.id)
         .set('Authorization', `Bearer ${tokenFromUser1}`);
 
         expect(response.status).toBe(httpStatus.UNAUTHORIZED);
       });
 
-      it('should respond with status 200 and delete if its user credential', async () => {
+      it('should respond with status 200 and delete if its user network', async () => {
         const user = await createUser()
         const token = await generateValidToken(user);
-        const credential = await createCredentialFactory(user)
+        const network = await createNetworkFactory(user)
 
-        const response = await server.delete('/credential/'+credential.id)
+        const response = await server.delete('/network/'+network.id)
         .set('Authorization', `Bearer ${token}`);
 
         expect(response.status).toBe(httpStatus.OK);
-        const query = await prisma.credential.findFirst({ where: { id:credential.id } });
+        const query = await prisma.network.findFirst({ where: { id:network.id } });
         expect(query).toBeNull();
       });
       
