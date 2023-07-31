@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import 'express-async-errors';
 import express, { Express } from 'express';
 import cors from 'cors';
@@ -9,7 +8,7 @@ loadEnv();
 
 import { handleApplicationErrors } from '@/middleware';
 import {
-  authenticationRouter, credentialRouter,
+  authenticationRouter, credentialRouter, networkRouter,
 } from '@/router';
 
 const app = express();
@@ -18,6 +17,7 @@ app
   .use(express.json())
   .use('/auth', authenticationRouter)
   .use('/credential', credentialRouter)
+  .use('/network', networkRouter)
   .use(handleApplicationErrors);
 
 export function init(): Promise<Express> {

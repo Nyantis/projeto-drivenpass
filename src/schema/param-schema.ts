@@ -1,5 +1,5 @@
 import Joi from 'joi';
 
-export const idParamSchema = Joi.object({
+export const paramSchema = Joi.object({
     id: Joi.number().integer()
 })

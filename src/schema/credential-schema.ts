@@ -9,7 +9,7 @@ export const credentialSchema = Joi.object<CredentialSchema>({
     password: Joi.string().required(),
 });
 
-export type CredentialSchema = Pick<Credential, 'username' | 'password' | 'title' | 'url'>;
+type CredentialSchema = Pick<Credential, 'username' | 'password' | 'title' | 'url'>;
 export type CreateCredential = CredentialSchema & {
     userId: number
 };
