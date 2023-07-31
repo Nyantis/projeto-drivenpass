@@ -11,7 +11,10 @@ export async function loginPost(req: Request, res: Response) {
 
     return res.status(httpStatus.OK).send(result);
   } catch (error) {
-    return res.status(httpStatus.UNAUTHORIZED).send({});
+    if (error.code) {
+      return res.status(error.code).send(error.content);
+    }
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({});
   }
 }
 
@@ -25,9 +28,9 @@ export async function registerPost(req: Request, res: Response) {
       email: user.email,
     });
   } catch (error) {
-    if (error.name === 'DuplicatedEmailError') {
-      return res.status(httpStatus.CONFLICT).send(error);
+    if (error.code) {
+      return res.status(error.code).send(error.content);
     }
-    return res.status(httpStatus.BAD_REQUEST).send(error);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
   }
 }

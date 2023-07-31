@@ -34,6 +34,7 @@ export async function credentialGet(req: Request, res: Response) {
       if(error.code){
         return res.status(error.code).send(error.content);
       }
+      console.log(error)
       return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }
@@ -49,6 +50,7 @@ export async function credentialDelete(req: Request, res: Response) {
       if(error.code){
         return res.status(error.code).send(error.content);
       }
+      console.log(error)
       return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }

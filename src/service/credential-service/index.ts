@@ -12,7 +12,7 @@ export async function create(body: CreateCredential): Promise<Credential> {
 }
 
 
-async function gotcha(userId:number, id?:number): Promise<Credential[]> {
+async function gotcha(userId:number, id?:number): Promise<Credential[] | Credential> {
   let resp:Credential[]
   if(!id){
     const query = await credentialRepository.findAll(userId)
@@ -20,19 +20,16 @@ async function gotcha(userId:number, id?:number): Promise<Credential[]> {
     resp = query
   }
   if(!resp){  
-    const query = await credentialRepository.findById(id, userId)
-    if(!query){
-      const checkCreated = await credentialRepository.findAll(userId)
-      if(checkCreated.length === 0)throw couldntFindAny("Credential")
-      throw cantAccessThis("Credential")
-    }
-
+    const query = await credentialRepository.findById(id)
+    if(!query)throw couldntFindAny("Credential")
+    if(query.userId !== userId)throw cantAccessThis("Credential")
     resp = [query]
   }
   resp.forEach(item => {
     const unhashPass = decryptrThis(item.password)
     item.password = unhashPass
-  }) 
+  })
+  if(resp.length === 1) return resp[0]
   return resp
 }
 

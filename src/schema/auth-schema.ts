@@ -4,7 +4,7 @@ import { SignInParams, CreateUserParams } from '@/service/auth-service';
 
 export const signInSchema = Joi.object<SignInParams>({
   email: Joi.string().email().required(),
-  password: Joi.string().required(),
+  password: Joi.string().min(10).required(),
 });
 
 export const createUserSchema = Joi.object<CreateUserParams>({

@@ -10,11 +10,10 @@ async function create(data: Prisma.CredentialUncheckedCreateInput) {
 
 //-----------------------------------------------------------------
 
-async function findById(id: number, userId:number) {
+async function findById(id: number) {
   const params: Prisma.CredentialFindUniqueArgs = {
     where: {
       id,
-      userId
     },
   };
 
