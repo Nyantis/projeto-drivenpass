@@ -1,4 +1,4 @@
-import { SignInParams } from '@/service';
+import { SignInParams } from '@/service/auth-service';
 import authenticationService from '@/service/auth-service';
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';

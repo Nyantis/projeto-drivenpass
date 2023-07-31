@@ -1,13 +1,14 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/config';
 
-
+//-----------------------------------------------------------------
 async function create(data: Prisma.CredentialUncheckedCreateInput) {
   return prisma.credential.create({
     data,
   });
 }
 
+//-----------------------------------------------------------------
 
 async function findById(id: number, userId:number) {
   const params: Prisma.CredentialFindUniqueArgs = {
@@ -20,6 +21,8 @@ async function findById(id: number, userId:number) {
   return prisma.credential.findUnique(params);
 }
 
+//-----------------------------------------------------------------
+
 async function findAll(userId: number) {
     const params: Prisma.CredentialFindManyArgs = {
     where:{
@@ -30,11 +33,24 @@ async function findAll(userId: number) {
     return prisma.credential.findMany(params);
   }
 
+//-----------------------------------------------------------------
+
+async function deleteById(userId:number, id:number) {
+  const params: Prisma.CredentialDeleteArgs = {
+    where:{
+            id,
+            userId
+        }
+    };
+  
+    return prisma.credential.delete(params);
+}
 
 const credentialRepository = {
   findAll,
   findById,
   create,
+  deleteById
 };
 
 export default credentialRepository;

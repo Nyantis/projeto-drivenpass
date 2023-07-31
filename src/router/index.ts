@@ -1,2 +1,2 @@
 export * from './auth-router';
-export * from './credentials-router'
+export * from './credential-router'

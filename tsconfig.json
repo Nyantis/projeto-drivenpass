@@ -18,5 +18,5 @@
       }
     ]
   },
-  "include": ["src", "tests", "src/locals.d.ts"]
+  "include": ["src", "tests", "src/locals.d.ts", "src/repository/.network-repository"]
 }
